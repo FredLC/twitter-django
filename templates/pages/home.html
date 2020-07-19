@@ -2,4 +2,35 @@
 
 {% block content %}
 <h1>Welcome to Django Twitter!</h1>
+
+<div id="tweets"></div>
+
+<script>
+    const tweetElements = document.getElementById('tweets');
+    tweetElements.innerHTML = 'Loading...';
+
+    const xhr = new XMLHttpRequest();
+    const method = 'GET';
+    const url = '/tweets';
+    const responseType = 'json';
+
+    function formatTweetElement(tweet) {
+        return `<div class="mb-4" id="tweet-${tweet.id}">` + '<p>' + tweet.content + '</p>';
+    }
+
+    xhr.responseType = responseType;
+    xhr.open(method, url);
+    xhr.onload = function() {
+        const serverResponse = xhr.response;
+        const listedItems = serverResponse.response;
+        let finalTweetStr = '';
+        for (let i = 0; i < listedItems.length; i++) {
+            const tweetObj = listedItems[i]
+            const currentItem = formatTweetElement(tweetObj);
+            finalTweetStr += currentItem;
+        }
+        tweetElements.innerHTML = finalTweetStr;
+    }
+    xhr.send();
+</script>
 {% endblock %}
